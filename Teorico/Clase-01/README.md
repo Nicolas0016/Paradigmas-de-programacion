@@ -129,3 +129,96 @@ Respuesta
 ```hs
 flip :: (a -> b -> c) -> b -> a -> c
 ```
+
+# Funciones de orden superior
+Definamos la composición de funciones (“g . f”).
+```hs
+(.) :: (b -> c) -> (a -> b) -> a -> c
+(g . f) x = g (f x)
+```
+
+Otra forma de definirla (usando la notación “lambda”):
+```hs
+(.) :: (b -> c) -> (a -> b) -> a -> c
+g . f = \ x -> g (f x)
+```
+
+¿Qué tienen en com´un las siguientes funciones?
+```hs
+dobleL :: [Float] -> [Float]
+dobleL [] = []
+dobleL (x : xs) = x * 2 : dobleL xs
+```
+```hs
+esParL :: [Int] -> [Bool]
+esParL [] = []
+esParL (x : xs) = x ‘mod‘ 2 == 0 : esParL xs
+```
+```hs
+longitudL :: [[a]] -> [Int]
+longitudL [] = []
+longitudL (x : xs) = length x : longitudL xs
+```
+Todas ellas siguen el esquema:
+```hs
+g [] = []
+g (x : xs) = f x : g xs
+```
+¿Cómo se puede abstraer el esquema?
+
+```hs
+map :: (a -> b) -> [a] -> [b]
+map f [] = []
+map f (x : xs) = f x : map f xs
+dobleL xs = map (\ x -> x * 2) xs
+esParL xs = map (\ x -> x ‘mod‘ 2 == 0) xs
+longitudL xs = map length xs
+```
+Otra manera:
+```hs
+dobleL = map (* 2)
+esParL = map ((== 0) . (‘mod‘ 2))
+longitudL = map length
+```
+
+Otro ejemplo:
+```hs
+negativos :: [Int] -> [Int]
+negativos [] = []
+negativos (x : xs) = 
+    if x < 0 then x : negativos xs
+    else negativos xs
+```
+```hs
+noVacias :: [[a]] -> [[a]]
+noVacias [] = []
+noVacias (x : xs) = 
+    if not (null x) then x : noVacias xs
+    else noVacias xs
+```
+Ambas siguen el esquema:
+```hs
+g [] = []
+g (x : xs) = 
+    if p x then x : g xs
+    else g xs
+```
+¿Cómo se puede abstraer el esquema?
+```hs
+filter :: (a -> Bool) -> [a] -> [a]
+filter p [] = []
+filter p (x : xs) = 
+    if p x then x : filter p xs
+    else filter p xs
+```
+```hs
+negativos = filter (< 0)
+noVacias = filter (not . null)
+```
+
+Ejercicio
+```
+merge :: (a -> a -> Bool) -> [a] -> [a] -> [a]
+mergesort :: (a -> a -> Bool) -> [a] -> [a]
+```
+El primer parámetro es una función que determina una relación de orden total entre los elementos de tipo a.
