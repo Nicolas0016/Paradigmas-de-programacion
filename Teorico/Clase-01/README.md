@@ -103,3 +103,29 @@ Se puede pensar así:
 suma4 :: Int -> (Int -> (Int -> (Int -> Int)))
 (((suma4 a) b) c) d = a + b + c + d
 ```
+
+### Polimorfismo
+Hay expresiones que tienen más de un tipo. Usamos variables de tipo a, b, c para denotar tipos desconocidos:
+
+```hs
+id :: a -> a
+[] :: [a]
+(:) :: a -> [a] -> [a]
+fst :: (a, b) -> a
+snd :: (a, b) -> b
+```
+Ejemplo
+```hs
+flip f x y = f y x
+```
+¿Qué tipo tiene flip?
+```hs
+flip (:) [2, 3] 1
+= (:) 1 [2, 3]
+≡ 1 : [2, 3]
+= [1, 2, 3]
+```
+Respuesta
+```hs
+flip :: (a -> b -> c) -> b -> a -> c
+```
