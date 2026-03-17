@@ -8,3 +8,8 @@ Para entender a fondo, no basta con saber escribir código; se deben estudiar cu
 + **Implementación**: Cómo la maquina ejecuta esas frases respetando la semántica (mediante intérpretes, compiladores o inferencia de tipos).
 
 
+### Fundamentos del Paradigma Funcional
+El enfoque funcional modela la programación puramente como el procesamiento de información (una entrada se computa y da una salida). SUS pilares son:
++ **Funciones matemáticas puras**: Aplicar una función no tiene efectos secundarios. A la misma entrada, siempre le corresponde la misma salida.
++ **Inmutabilidad**: Las estructuras de datos no cambian (no hay asignaciones destructivas ni ciclos while que muten variables)
++ **Las funciones son también datos**: Se pueden pasar como parámetros, devolver como resultados o guardarse en estructuras de datos.
