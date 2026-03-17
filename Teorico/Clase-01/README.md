@@ -12,4 +12,41 @@ Para entender a fondo, no basta con saber escribir código; se deben estudiar cu
 El enfoque funcional modela la programación puramente como el procesamiento de información (una entrada se computa y da una salida). SUS pilares son:
 + **Funciones matemáticas puras**: Aplicar una función no tiene efectos secundarios. A la misma entrada, siempre le corresponde la misma salida.
 + **Inmutabilidad**: Las estructuras de datos no cambian (no hay asignaciones destructivas ni ciclos while que muten variables)
-+ **Las funciones son también datos**: Se pueden pasar como parámetros, devolver como resultados o guardarse en estructuras de datos.
+
+### Expresiones
+Las expresiones son secuencias de símbolos que sirven para representar datos, funciones y funciones aplicadas a los datos.
+
+> OBS: Las funciones también son datos
+
+Una expresión puede ser:
+```hs
+True False [] (:) 0 1 2 ...
+```
+Una variable:
+```hs
+longitud ordenar x xs (+) (*) ...
+```
+3. La aplicación de una expresión a otra:
+```hs
+ordenar lista
+not True
+not (not True)
+(+) 1
+((+) 1) (alCuadrado 5)
+```
+Convenimos en que la aplicación es asociativa a izquierda:
+```hs
+f x y ≡ (f x) y !≡ f (x y)
+```
+Ejemplo:
+```hs
+sumarUno = (+) 1
+
+sumarUno (sumarUno 5)
+= ((+) 1) (sumarUno 5)
+≡ 1 + sumarUno 5
+= 1 + ((+) 1) 5
+≡ 1 + (1 + 5)
+= 1 + 6
+= 7
+```
