@@ -50,3 +50,56 @@ sumarUno (sumarUno 5)
 = 1 + 6
 = 7
 ```
+
+### Tipos
+Un tipo es una especificación del invariante de un dato o de una función.
+
+Ejemplo:
+```hs
+99 :: Int
+not :: Bool -> Bool
+not True :: Bool
+(+) :: Int -> (Int -> Int)
+(+) 1 :: Int -> Int
+((+) 1) 2 :: Int
+```
+El tipo de una función expresa un **contrato**.
+Condiciones de tipado
+
+>Para que un programa esté **bien tipado**:
+>1. Todas las expresiones deben tener tipo.
+>2. Cada variable se debe usar siempre con un mismo tipo.
+>3. Los dos lados de una ecuación deben tener el mismo tipo.
+>4. El argumento de una función debe tener el tipo del dominio.
+>5. El resultado de una función debe tener el tipo del codominio.
+<center>
+
+$\huge \frac{f :: a \rightarrow b \quad x :: a}{f~x :: b}$
+
+</center>
+Lo que esta por encima de la linea:
+
++ `f :: a -> b`: Significa que tengo función llamada `f`. Esta recibe como argumento un dato de tipo `a` y devuelve como resultado un dato de tipo `b`.
++ `x :: a`: Significa que tengo un valor o expresión llamado `x` que es exactamente del tipo `a`.
+
+Lo que está abajo de la línea:
++ `f x :: b`: Significa que si aplicas la función `f` al valor `x`, el resultado de toda esa expresión será inevitablemente del tipo `b`
+
+> No es necesario escribir explícitamente los tipos. (Inferencia)
+
+Convenimos en que “->” es asociativo a derecha:
+
+```hs
+a -> b -> c ≡ a -> (b -> c) !≡ (a -> b) -> c
+a -> b -> c -> d ≡ a -> (b -> (c -> d))
+```
+Ejemplo:
+```hs
+suma4 :: Int -> Int -> Int -> Int -> Int
+suma4 a b c d = a + b + c + d
+```
+Se puede pensar así:
+```hs
+suma4 :: Int -> (Int -> (Int -> (Int -> Int)))
+(((suma4 a) b) c) d = a + b + c + d
+```
