@@ -64,3 +64,34 @@ even => Int -> Bool
 ```
 
 ## Variables de tipo:
+```hs
+[] :: [a]
+id :: a -> a
+head :: [a] -> a
+tail :: [a] -> [a]
+const :: a -> b -> a
+length :: [a] -> Int
+```
+
+¿Qué funciones son?
+```hs
+-- Suma
+a1 x 0 = x
+a1 x y = a1 x (y - 1) + 1
+
+-- Multiplicación
+a2 x 0 = 0
+a2 x y = a2 (x-1) y + x
+
+-- Potenciación
+a3 x 0 = 0
+a3 x y = a3 x (y-1) * x
+```
+
+Tipo de funciones:
+f1 :: Int -> (Int -> Int)
+f2 :: (Int -> Int) -> Int
+f3 :: Int -> Int -> Int
+
+> Obs: los parentesis son para agrupar, no son necesarios en este caso porque la asociatividad de la función es de izquierda a derecha.
+
