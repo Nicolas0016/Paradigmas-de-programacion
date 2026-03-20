@@ -123,3 +123,200 @@ Algunos ejemplos:
 + repeat "hola"
 + primos = [n | n <- [2..], esPrimo n]
 + infinitosUnos = 1 : infinitosUnos
+
+## Evaluación lazy
+```hs
+take :: Int -> [a] ->[a]
+take 0 _ = []
+take _ [] = []
+take n (x:xs) = x : take (n-1) xs
+
+infinitosUnos :: [Int]
+infinitosUnos = 1 : infinitosUnos
+
+nUnos :: Int -> [Int]
+nUnos n = take n infinitosUnos
+```
++ Si ejecutamos nUnos 2 ...
+```hs
+nUnos 2 → take 2 infinitosUnos → take 2 (1:infinitosUnos)→
+1 : take (2-1) infinitosUnos → 1 : take 1 infinitosUnos →
+1 : take 1 (1:infinitosUnos)→ 1 : 1: take (1-1)
+infinitosUnos → 1 : take 0 infinitosUnos → 1 : 1 : []
+```
++ ¿Qué sucedería si usáramos otra estrategia de redicción?
+
+Si para algún término existe una reducción finita, entonces la estrategia de reducción lazy termina.
+
+## Funciones de alto orden
+Definamos las siguientes funciones:
+Precondición: Todas las listas tienen algún elemento
+
++ maximo :: Ord a => [a] -> a
++ minimo :: Ord a => [a] -> a
++ listaMasCorta :: [[a]] -> [a]
+
+Solución:
+
+```hs
+maximo :: Ord a => [a] -> a
+maximo [x] = x
+maximo (x:y:xs)
+    | x > y = maximo (x:xs)
+    | otherwise = maximo (y:xs)
+
+minimo :: Ord a => [a] -> a
+minimo [x] = x
+minimo (x:y:xs)
+    | x < y = minimo (x:xs)
+    | otherwise = minimo (y:xs)
+
+listaMasCorta :: [[a]] -> [a]
+listaMasCorta [x] = x
+listaMasCorta (x:y:xs)
+    | length x < length y = listaMasCorta (x:xs)
+    | otherwise = listaMasCorta (y:xs)
+
+```
+Siempre hago lo mismo... ¿Se podrá generalizar? ¿Cómo?
+
+Ejercicio:
++ `mejorSegun :: (a -> a -> Bool) -> [a] -> a`
++ reescribir maximo y listaMasCorta en base a mejorSegun
+
+Respuesta:
+
+```hs
+mejorSegun :: (a -> a -> Bool) -> [a] -> a
+mejorSegun f [x] = x
+mejorSegun f (x:y:xs)
+    | f x y = mejorSegun f (x:xs)
+    | otherwise = mejorSegun f (y:xs)
+
+maximo :: Ord a => [a] -> a
+maximo = mejorSegun (>) 
+
+listaMasCorta :: [[a]] -> [a]
+listaMasCorta = mejorSegun (\x y -> length x < length y)
+```
+
+Filtrar elementos de una lista
+
+```
+filter :: (a->Bool) -> [a] -> [a]
+filter p [] = []
+filter p (x:xs) = 
+    if p x
+    then x : filter p xs
+    else filter p xs
+```
+> Si P de x es verdadero hace todo lo que sigue, si no, hace lo que sigue del else.
+
+Ejercicios Definir usando filter:
+
++ `deLongitudN :: Int -> [a] -> [a]`
++ `soloPuntosFijosEnN :: Int -> [Int -> Int] -> [Int -> Int]` Dados un número n y una lista de funciones, dejas las funciones que al aplicarlas a n dan n.
+
+Respuesta:
+```hs
+deLongitudN :: Int -> [a] -> [a]
+deLongitudN n xs = filter (\x -> length x == n) xs
+
+soloPuntosFijosEnN :: Int -> [Int -> Int] -> [Int -> Int]
+soloPuntosFijosEnN n xs = filter (\f -> f n == n) xs
+```
+
+Transformar elementos de una lista
+```hs
+map :: (a->b) -> [a] -> [b]
+map f [] = []
+map f (x:xs) = f x : map f xs
+```
+Ejercicio:
++ `reverseAnidado :: [[Char]] -> [[Char]]` que, dada una lista de strings, devuelve una lista con cada string dado vuelta y la lista completa dada vuelta. 
++ `paresCuadrados :: [Int] -> [Int]` que, dada una lista de enteros, devuelve una lista con los cuadrados de los números pares y los impares sin modificar.
+Respuesta:
+```hs
+darVuelta :: [a] -> [a]
+darVuelta [] = []
+darVuelta (x:xs) = (darVuelta xs) ++ [x]
+
+reverseAnidado :: [[Char]] -> [[Char]]
+reverseAnidado xs = map reverse (reverse xs)
+
+
+parCuadrado :: Int -> Int
+parCuadrado x
+    | (x `mod` 2 == 0) = x * x
+    | otherwise = x
+
+paresCuadrados :: [Int] -> [Int]
+paresCuadrados [] = []
+paresCuadrados xs = map parCuadrado xs
+```
+
+¿Hay similitud entre estas definiciones?
+
+```hs
+filter :: (a -> Bool) -> [a] -> [a]
+filter [] = []
+filter p (x:xs) = 
+    if p x 
+        then x : filter p xs
+    else filter p xs
+```
+
+```hs
+map :: (a -> b) -> [a] -> [b]
+map [] = []
+map f (x:xs) = f x : map f xs
+```
++ En el caso base devolvemos un valor determinado.
+En el caso recursivo devolvemos algo en funci´on de:
+    + La cabeza de la lista.
+    + El llamado recursivo sobre la cola de la lista.
+
+```hs
+foldr :: (a -> b -> b) -> b -> [a] -> b
+foldr z [] = z
+foldr f z (x:xs) = f x (foldr f z xs)
+```
++ z es el valor que devolvemos para una lista vacía. 
++ f es una función que computa el resultado sobre la listaentera a partir de:
+    + La cabeza de la lista.
+    + El llamado recursivo sobre la cola de la lista.
+
+>Ejemplo:
+>
+>Si xs = [x1, x2, x3] entonces:
+>
+>foldr f z xs = f x1 (f x2 (f x3 z))
+>
+>Equivalentemente con notaci´on infija:
+>
+>foldr ⋆ z xs = x1 ⋆ (x2 ⋆ (x3 ⋆ z))
+
+Reescribiendo filter y map con foldr
+
+
+```hs
+filter :: (a -> Bool) -> [a] -> [a]
+filter p xs = 
+    foldr (\x r -> if p x then x:r else r) [] xs
+
+map :: (a -> b) -> [a] -> [b]
+map f xs = foldr (\x r -> f x : r ) [] xs
+```
+> En este caso no es necesario el `xs` porque `foldr` ya captura la lista como su último argumento, permitiendo una definición más elegante y en estilo `point-free`.
+
+Definir una expresión equivalente a las siguiente utilizando map y filter:
+```hs
+-- Ejercicio
+listaComp :: (a -> Bool) -> (a -> b) -> [a] -> [b]
+listaComp p f xs = [f x | x <- xs, p x]
+```
+Respuesta:
+```hs
+listaComp :: (a -> Bool) -> (a -> b) -> [a] -> [b]
+listaComp p f xs = map f (filter p xs)
+```

@@ -15,5 +15,23 @@ flip f x y = f y x
 ($) f x = f x
 
 -- const
-const :: a -> b -> a
-const x y = x
+    
+-- map :: (a -> b) -> [a] -> [b]
+-- map [] = []
+-- map f (x:xs) = f x : map f xs
+
+-- ReverseAnidado
+darVuelta :: [a] -> [a]
+darVuelta [] = []
+darVuelta (x:xs) = (darVuelta xs) ++ [x]
+
+reverseAnidado :: [[Char]] -> [[Char]]
+reverseAnidado xs = map reverse (reverse xs)
+
+parCuadrado :: Int -> Int
+parCuadrado x
+    | (x `mod` 2 == 0) = x * x
+    | otherwise = x
+paresCuadrados :: [Int] -> [Int]
+paresCuadrados [] = []
+paresCuadrados xs = map parCuadrado xs
