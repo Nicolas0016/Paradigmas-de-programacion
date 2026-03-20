@@ -62,11 +62,64 @@ Respuestas:
 
         ((\x -> x * 4) . (\y -> y - 3)) 10 devuelve 28.
     + `flip` que intercambia el orden de los argumentos de una función. Por ejemplo:
+
         flip (\x y -> x - y) 1 5, devuelve 4.
     + `($)` que aplica una función a un argumento. Por ejemplo:
-    
+
         id $ 6 devuelve 6.
     + `const` que, dado un valor, retorna una función constante que devuelve siempre ese valor. Por ejemplo:
         
         const 5 "casa" devuelve 5
 2. ¿Qué hace flip ($) 0?
+3. ¿Y (==0) . (flip mod 2)?
+Respuesta
+
+```hs
+-- (.)
+(.) :: (b -> c) -> (a -> b) -> a -> c
+(.) f g x = f (g x)
+
+-- flip
+flip :: (a -> b -> c) -> b -> a -> c
+flip f x y = f y x
+
+-- ($)
+($) :: (a -> b) -> a -> b
+($) f x = f x
+
+-- const
+const :: a -> b -> a
+const x y = x
+``` 
+
+2. ¿Qué hace `flip ($) 0`?
+
+Respuesta:
+
+```hs
+flip ($) 0 = ($) 0 = 0
+```
+
+3. ¿Y `(==0) . (flip mod 2)`?
+
+
+
+> Hay más funciones útiles en la sección `útil` del campus. 
+
+## Listas
+Hay varias macros para definir listas:
++ Por extensión
+    Esto es una lista explícita, escribiendo todos sus elementos `[1,5,6,5,4,8,6,1,3]`
++ Secuencias
+    Son progresiones aritméticas en un rango particular`[1..10]`
++ Por comparación:
+    def [expresión | selectores, condiciones]
+    por ejemplo: `[(x,y) | x <- [0..5], y <- [0..3], x+y==4]` es una lista de pares (1,3), (2,2), (3,1) y (4,0).
+
+Haskell también nos permite trabajar con listas infinitas
+Algunos ejemplos:
++ naturales = [1..]
++ multiplos de 3 = [0, 3..]
++ repeat "hola"
++ primos = [n | n <- [2..], esPrimo n]
++ infinitosUnos = 1 : infinitosUnos
