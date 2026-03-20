@@ -89,9 +89,81 @@ a3 x y = a3 x (y-1) * x
 ```
 
 Tipo de funciones:
+```hs
 f1 :: Int -> (Int -> Int)
 f2 :: (Int -> Int) -> Int
 f3 :: Int -> Int -> Int
+```
+¿De que tipo son las siguientes expresiones?
 
-> Obs: los parentesis son para agrupar, no son necesarios en este caso porque la asociatividad de la función es de izquierda a derecha.
+```hs
+f1 5 :: Int -> Int
+f1 5 8 :: Int
+f3 5 8 :: Int 
+f3 5 :: Int -> Int
+f2 5 :: error
+f2 (+1) :: Int
+```
 
+## Convenciones de precedencia y asociatividad
+
++ Los tipos tienen asociatividad a derecha
+
+$$a \to b \to c = a \to (b \to c) \neq (a \to b) \to c$$
+
++ La aplicación tiene asociatividad a izquierda
+$$f x y = (f x) y \neq f (x y)$$
+
++ La aplicación tiene mayor precedencia que los operadores binarios 
+
+$$f x + y = (f x) + y \neq f (x + y)$$
+
++ Los operadores binarios se pueden usar como funciones:
+$$x + y = (+) \ x \ y$$
+
++ Las funciones se pueden usar como operadores binarios
+
+$f x y = x f y$ 
+
+## Tipos de datos algebraicos
+
+```hs
+data Bool = True | False
+
+True :: Bool
+False :: Bool
+```
+
+```hs
+data Maybe a = Nothing | Just a
+Nothing :: Maybe a
+Just :: a -> Maybe a
+```
+> `Maybe a` es un tipo de dato que puede ser `Nothing` o `Just a`.
+> + `Nothing` es un valor que representa la ausencia de un valor.
+> + `Just a` es un valor que representa la presencia de un valor de tipo `a`.
+
+```hs
+data Either a b = Left a | Right b
+Left :: a -> Either a b
+Right :: b -> Either a b
+```
+> `Either a b` es un tipo de dato que puede ser `Left a` o `Right b`.
+> + `Left a` es un valor que representa un error de tipo `a`.
+> + `Right b` es un valor que representa un valor de tipo `b`.
+
+Ejemplos:
++ `inverso :: Float -> Maybe Float`: Dado un número, devuelve su inverso multiplicativo si está definido, o Nothing en caso contrario.
+
++ `aEntero :: Either Int Bool -> Int`: Convierte una expresión que puede ser booleana o entera. En caso de los booleanos, el entero que corresponde es 0 para el False y 1 para el True.
+
+```hs
+inverso :: Float -> Maybe Float
+inverso 0 = Nothing
+inverso x = Just (1 / x)
+
+aEntero :: Either Int Bool -> Int
+aEntero (Left x) = x
+aEntero (Right True) = 1
+aEntero (Right False) = 0
+```
