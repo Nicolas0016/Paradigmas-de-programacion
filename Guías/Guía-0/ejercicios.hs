@@ -19,17 +19,6 @@ factorial :: Int -> Int
 factorial 0 = 1
 factorial n = n * factorial (n - 1)
 
--- cantDivisoresPrimos
-cantDivisoresPrimos :: Int -> Int
-cantDivisoresPrimos n 
-    | n < 2 = 0
-    | otherwise = iCantDivisoresPrimos 2 n
-
-iCantDivisoresPrimos :: Int -> Int -> Int
-iCantDivisoresPrimos i n
-    | i > n = 0
-    | esPrimo i && n `mod` i == 0 = 1 + iCantDivisoresPrimos (i + 1) n
-    | otherwise = iCantDivisoresPrimos (i + 1) n
 
 esPrimo :: Int -> Bool
 esPrimo n
