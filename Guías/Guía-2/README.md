@@ -78,3 +78,23 @@ data AB a = Nil | Bin (AB a) a (AB a)
 ```
 
 ¿Que tipo de recursión tiene cada una de las siguientes funciones? (Estructural, Primitiva, Global)
+> Recordatorio:
+> + Estructural: Remplaza la lista vacía por un valor inicial y el contructor de la lista por una función.
+> + Primitiva: Generaliza la recursión estructural, dando al caso recursivo el poder adicional de acceder al resto de la lista además del resultado recursivo del procesamiento de esta.
+> + Recursión Global: Utiliza un acumulador que se va actualizando en el caso base y se transfiere de forma recursiva invocando inmediatamente la operación con el nuevo estado del acumulador. Se procesa desde el principio hacia el final.
+```hs
+-- Estructural
+insertarABB :: Ord a => a -> AB a -> AB a
+insertarABB x Nil = Bin Nil x Nil
+insertarABB x (Bin i r d) = if x < r
+    then Bin (insertarABB x i) r d
+    else Bin i r (insertarABB x d)
+```
+```hs
+
+truncar :: AB a -> Int -> AB a
+truncar Nil _ = Nil
+truncar (Bin i r d) n = if n == 0
+    then Nil
+    else Bin (truncar i (n-1)) r (truncar d (n-1))
+```
